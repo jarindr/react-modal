@@ -1,13 +1,11 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import ExecutionEnvironment from 'exenv';
 import elementClass from 'element-class';
 import ModalPortal from './ModalPortal';
 import * as ariaAppHider from '../helpers/ariaAppHider';
 
 const renderSubtreeIntoContainer = ReactDOM.unstable_renderSubtreeIntoContainer;
 
-const SafeHTMLElement = ExecutionEnvironment.canUseDOM ? window.HTMLElement : {};
 
 function getParentElement (parentSelector) {
   return parentSelector();
@@ -23,7 +21,11 @@ export default class Modal extends Component {
       overlay: React.PropTypes.object
     }),
     portalClassName: React.PropTypes.string,
-    appElement: React.PropTypes.instanceOf(SafeHTMLElement),
+    /**
+     * A function that returns the appElement that will be aria-hidden
+     * when the modal is open. The function should return a DOMElement.
+     */
+    getAppElement: React.PropTypes.func.isRequired,
     onAfterOpen: React.PropTypes.func,
     onRequestClose: React.PropTypes.func,
     closeTimeoutMS: React.PropTypes.number,
@@ -69,10 +71,6 @@ export default class Modal extends Component {
     }
   };
 
-  static setAppElement (element) {
-    ariaAppHider.setElement(element);
-  }
-
   static injectCSS () {
     return process.env.NODE_ENV !== 'production'
         && console.warn('React-Modal: injectCSS has been deprecated ' +
@@ -80,6 +78,7 @@ export default class Modal extends Component {
   }
 
   componentDidMount () {
+    ariaAppHider.setElement(this.props.getAppElement());
     this.node = document.createElement('div');
     this.node.className = this.props.portalClassName;
 
@@ -102,7 +101,7 @@ export default class Modal extends Component {
 
   componentWillUnmount () {
     if (this.props.ariaHideApp) {
-      ariaAppHider.show(this.props.appElement);
+      ariaAppHider.show(this.props.getAppElement());
     }
 
     const state = this.portal.state;
@@ -137,7 +136,7 @@ export default class Modal extends Component {
     }
 
     if (props.ariaHideApp) {
-      ariaAppHider.toggle(props.isOpen, props.appElement);
+      ariaAppHider.toggle(props.isOpen, this.props.getAppElement());
     }
 
     this.portal = renderSubtreeIntoContainer(this,
