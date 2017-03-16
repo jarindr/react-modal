@@ -27,7 +27,7 @@ module.exports = {
   },
 
   output: {
-    filename: 'react-modal.js',
+    filename: 'index.js',
     chunkFilename: '[id].chunk.js',
     publicPath: '/',
     libraryTarget: 'umd',
