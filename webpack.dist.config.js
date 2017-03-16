@@ -1,13 +1,13 @@
-var webpack = require('webpack');
-var UglifyJsPlugin = webpack.optimize.UglifyJsPlugin;
+const webpack = require('webpack');
+const UglifyJsPlugin = webpack.optimize.UglifyJsPlugin;
 
-var reactExternal = {
+const reactExternal = {
   root: 'React',
   commonjs2: 'react',
   commonjs: 'react',
   amd: 'react'
 };
-var reactDOMExternal = {
+const reactDOMExternal = {
   root: 'ReactDOM',
   commonjs2: 'react-dom',
   commonjs: 'react-dom',
@@ -22,14 +22,13 @@ module.exports = {
   },
 
   externals: {
-    'react': reactExternal,
+    react: reactExternal,
     'react-dom': reactDOMExternal
   },
 
   output: {
-    filename: '[name].js',
+    filename: 'react-modal.js',
     chunkFilename: '[id].chunk.js',
-    path: 'dist',
     publicPath: '/',
     libraryTarget: 'umd',
     library: 'ReactModal'
@@ -50,7 +49,7 @@ module.exports = {
 
   module: {
     loaders: [
-      { test: /\.js?$/, exclude: /node_modules/, loader: 'babel'}
+      { test: /\.js?$/, exclude: /node_modules/, loader: 'babel' }
     ]
   }
 
